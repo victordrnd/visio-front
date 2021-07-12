@@ -28,9 +28,15 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
+              "src/theme.less",
               "src/styles.scss"
             ],
             "scripts": []
@@ -77,6 +83,11 @@
             "development": {
               "browserTarget": "visio:build:development"
             }
+          },
+          "options": {
+            "sslKey": "./server.key",
+            "sslCert": "./server.crt",
+            "ssl": true
           },
           "defaultConfiguration": "development"
         },
