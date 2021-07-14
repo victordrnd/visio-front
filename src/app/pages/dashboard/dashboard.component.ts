@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CallService } from 'src/app/core/services/call.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private callService : CallService) { }
 
   ngOnInit(): void {
+    this.callService.registerOnPhoneCallEvent();
   }
 
 }

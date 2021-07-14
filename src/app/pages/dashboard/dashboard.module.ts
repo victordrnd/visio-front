@@ -12,10 +12,12 @@ import { NzSliderModule } from 'ng-zorro-antd/slider';
 import { FormsModule } from '@angular/forms';
 import { SocketIoModule } from 'ngx-socket-io';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { VideoCallComponent } from './video-call/video-call.component';
 @NgModule({
   declarations: [
     DashboardComponent,
-    RoomComponent
+    RoomComponent,
+    VideoCallComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +29,6 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzButtonModule,
     NzSliderModule,
     SocketIoModule,
-    NzModalModule
   ],
   bootstrap : [DashboardComponent]
 })
