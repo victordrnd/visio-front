@@ -4,7 +4,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject } from 'rxjs';
 import { PhoneCallAnswer } from '../models/phone-call-answer';
-
+import { Location } from '@angular/common';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,9 +12,11 @@ export class CallService {
   private peerConnectionSubject = new BehaviorSubject<RTCPeerConnection>(this.openRTCConnection())
   audioService = new Audio();
   myStream !: MediaStream;
+  videoTrack!: RTCRtpSender;
   constructor(private socketService: Socket,
     private modalService: NzModalService,
-    private router: Router) {
+    private router: Router,
+    private location: Location) {
   }
 
 
@@ -25,6 +27,22 @@ export class CallService {
       this.audioService.play();
       this.openPhoneRiggingModal(phoneCallAnswer);
     });
+
+    this.peerConnection.onicecandidate = (ev: RTCPeerConnectionIceEvent) => {
+      if (ev.candidate)
+        this.socketService.emit('phone.new-ice-candidate', ev.candidate)
+    }
+    this.peerConnection.onnegotiationneeded = (ev) => {
+      console.log("negotiation", ev);
+      this.peerConnection.createOffer().then(d => this.peerConnection.setLocalDescription(d))
+        .then(() => this.socketService.emit('phone.negociating', this.peerConnection.localDescription))
+        .catch(e => console.log(e));
+        console.log("Negociation completed")
+    }
+
+    this.socketService.fromEvent<any>('phone.negociating').subscribe((sessionDescription: RTCSessionDescription) => {
+      this.sendAnswer({video : false, session : sessionDescription})
+    })
   }
 
 
@@ -58,6 +76,7 @@ export class CallService {
     this.socketService.emit('phone.calling', { session: sessionDescription, video })
   }
 
+
   async sendAnswer(phoneCallAnswer: PhoneCallAnswer) {
     await this.peerConnection.setRemoteDescription(new RTCSessionDescription(phoneCallAnswer.session))
     this.myStream = await this.getMediaStream(phoneCallAnswer.video);
@@ -65,17 +84,27 @@ export class CallService {
     const answer = await this.peerConnection.createAnswer();
     this.peerConnection.setLocalDescription(answer)
     this.socketService.emit('phone.answer', answer);
-    this.peerConnection.onicecandidate = (ev: RTCPeerConnectionIceEvent) => {
-      if (ev.candidate)
-        this.socketService.emit('phone.new-ice-candidate', ev.candidate)
+
+  }
+
+  async startScreenShare() {
+    const stream = await this.getDisplayMediaStream();
+    const screenTrack = stream.getVideoTracks()[0];
+    if (this.videoTrack) {
+      this.videoTrack.replaceTrack(screenTrack);
+    } else {
+      this.peerConnection.addTrack(screenTrack, this.myStream);
+      this.peerConnection.getSenders()[0].replaceTrack(screenTrack);
+      //this.myStream.addTrack(screenTrack);
+      // this.myStream.getVideoTracks().push(screenTrack)
     }
   }
 
-  public hangUp() : void{
+  public hangUp(): void {
     this.peerConnection.close();
     this.myStream.getTracks().forEach(track => track.stop());
     this.peerConnectionSubject.next(this.openRTCConnection());
-    history.back();
+    this.location.back()
   }
 
   async getMediaStream(video = false): Promise<MediaStream> {
@@ -90,24 +119,36 @@ export class CallService {
       });
     } catch (e) {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      // @ts-ignore
+      // stream = await navigator.mediaDevices.getDisplayMedia({audio : true, video : true});
     }
     return stream;
+  }
+
+  async getDisplayMediaStream() {
+    // @ts-ignore
+    return await navigator.mediaDevices.getDisplayMedia({ audio: false, video: true });
   }
 
 
   addTracksToPeerConnection(stream: MediaStream): void {
     stream.getTracks().forEach((track: MediaStreamTrack) => {
-      this.peerConnection.addTrack(track, stream);
+      if (track.kind == "video") {
+        this.videoTrack = this.peerConnection.addTrack(track, stream);
+      } else {
+        this.peerConnection.addTrack(track, stream)
+      }
+
     });
   }
 
 
-  public toggleMicrophone(){
+  public toggleMicrophone() {
     this.myStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
   }
 
-  public toggleCamera(){
-      this.myStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+  public toggleCamera() {
+    this.myStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
   }
 
   public registerEvents(): void {
@@ -121,7 +162,7 @@ export class CallService {
     })
   }
 
-  private openRTCConnection() : RTCPeerConnection{
+  private openRTCConnection(): RTCPeerConnection {
     return new RTCPeerConnection({
       iceServers: [
         { urls: "stun:stun.l.google.com:19302" }

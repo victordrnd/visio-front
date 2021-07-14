@@ -18,7 +18,6 @@ export class VideoCallComponent implements OnInit {
     private route : ActivatedRoute) { }
 
   async ngOnInit(): Promise<any> {
-    console.log(history.state);
     this.peerConnection = this.callService.peerConnection;
     
     this.peerConnection.ontrack = (ev: any) => {

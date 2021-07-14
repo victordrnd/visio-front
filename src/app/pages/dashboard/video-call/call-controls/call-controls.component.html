@@ -11,6 +11,13 @@
         <i nz-icon nzType="api" (click)="callService.hangUp()" nzTheme="outline"></i>
     </ng-template>
     <ng-template #actionEllipsis>
-        <i nz-icon nzType="ellipsis"></i>
+        <i nz-icon nzType="ellipsis" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="topLeft"></i>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="callService.startScreenShare()">Partager mon écran</li>
+              <li nz-menu-item>2nd menu item length</li>
+              <li nz-menu-item>3rd menu item length</li>
+            </ul>
+          </nz-dropdown-menu>
     </ng-template>
 </div>
