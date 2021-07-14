@@ -1,0 +1,16 @@
+<div class="call-controls">
+    <nz-card style="width: 300px;margin-top: 16px" [nzActions]="[actionMicrophone, actionCamera,actionHangUp, actionEllipsis]">
+    </nz-card>
+    <ng-template #actionMicrophone>
+        <i nz-icon nzType="audio-muted" (click)="callService.toggleMicrophone()" nzTheme="outline"></i>
+    </ng-template>
+    <ng-template #actionCamera>
+        <i nz-icon nzType="video-camera" (click)="callService.toggleCamera()" nzTheme="fill"></i>
+    </ng-template>
+    <ng-template #actionHangUp>
+        <i nz-icon nzType="api" (click)="callService.hangUp()" nzTheme="outline"></i>
+    </ng-template>
+    <ng-template #actionEllipsis>
+        <i nz-icon nzType="ellipsis"></i>
+    </ng-template>
+</div>

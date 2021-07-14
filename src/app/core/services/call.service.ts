@@ -9,17 +9,9 @@ import { PhoneCallAnswer } from '../models/phone-call-answer';
   providedIn: 'root'
 })
 export class CallService {
-  private peerConnectionSubject = new BehaviorSubject<RTCPeerConnection>(new RTCPeerConnection({
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" },
-      {
-        urls: 'turn:relay.backups.cz',
-        credential: 'webrtc',
-        username: 'webrtc'
-      },
-    ]
-  }))
+  private peerConnectionSubject = new BehaviorSubject<RTCPeerConnection>(this.openRTCConnection())
   audioService = new Audio();
+  myStream !: MediaStream;
   constructor(private socketService: Socket,
     private modalService: NzModalService,
     private router: Router) {
@@ -43,7 +35,7 @@ export class CallService {
       nzCancelText: "Raccrocher",
       nzOnOk: async () => {
         this.audioService.pause()
-        this.router.navigate(['/dashboard/video-call'], {state : {video : phoneCallAnswer.video}})
+        this.router.navigate(['/dashboard/video-call'], { state: { video: phoneCallAnswer.video } })
         await this.sendAnswer(phoneCallAnswer);
       },
       nzOnCancel: () => {
@@ -59,17 +51,17 @@ export class CallService {
         this.socketService.emit('phone.new-ice-candidate', ev.candidate)
       }
     }
-    const stream: MediaStream = await this.getMediaStream(video);
-    this.addTracksToPeerConnection(stream);
+    this.myStream = await this.getMediaStream(video);
+    this.addTracksToPeerConnection(this.myStream);
     let sessionDescription: RTCSessionDescriptionInit = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(sessionDescription);
-    this.socketService.emit('phone.calling', {session : sessionDescription, video})
+    this.socketService.emit('phone.calling', { session: sessionDescription, video })
   }
 
   async sendAnswer(phoneCallAnswer: PhoneCallAnswer) {
     await this.peerConnection.setRemoteDescription(new RTCSessionDescription(phoneCallAnswer.session))
-    const stream = await this.getMediaStream(phoneCallAnswer.video);
-    this.addTracksToPeerConnection(stream);
+    this.myStream = await this.getMediaStream(phoneCallAnswer.video);
+    this.addTracksToPeerConnection(this.myStream);
     const answer = await this.peerConnection.createAnswer();
     this.peerConnection.setLocalDescription(answer)
     this.socketService.emit('phone.answer', answer);
@@ -79,8 +71,27 @@ export class CallService {
     }
   }
 
+  public hangUp() : void{
+    this.peerConnection.close();
+    this.myStream.getTracks().forEach(track => track.stop());
+    this.peerConnectionSubject.next(this.openRTCConnection());
+    history.back();
+  }
+
   async getMediaStream(video = false): Promise<MediaStream> {
-    return await navigator.mediaDevices.getUserMedia({ audio: true, video });
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: true, video: video ? {
+          width: { ideal: 4096 },
+          height: { ideal: 2160 },
+          facingMode: "environment"
+        } : false
+      });
+    } catch (e) {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    }
+    return stream;
   }
 
 
@@ -91,7 +102,15 @@ export class CallService {
   }
 
 
-  public registerEvents() : void{
+  public toggleMicrophone(){
+    this.myStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+  }
+
+  public toggleCamera(){
+      this.myStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+  }
+
+  public registerEvents(): void {
     this.socketService.fromEvent<any>('phone.answer').subscribe((answer: RTCSessionDescriptionInit) => {
       this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
     });
@@ -101,6 +120,15 @@ export class CallService {
       try { await this.peerConnection.addIceCandidate(iceCandidat); } catch (e) { }
     })
   }
+
+  private openRTCConnection() : RTCPeerConnection{
+    return new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" }
+      ]
+    });
+  }
+
 
   get peerConnection() {
     return this.peerConnectionSubject.getValue()

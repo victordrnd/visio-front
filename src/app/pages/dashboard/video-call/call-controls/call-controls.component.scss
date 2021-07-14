@@ -1,0 +1,11 @@
+:host::ng-deep{
+    .ant-card-body{
+        display: none;
+    }
+}
+.call-controls{
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(calc(-50% + 100px));   
+}
