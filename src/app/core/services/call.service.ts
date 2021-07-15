@@ -37,11 +37,20 @@ export class CallService {
       this.peerConnection.createOffer().then(d => this.peerConnection.setLocalDescription(d))
         .then(() => this.socketService.emit('phone.negociating', this.peerConnection.localDescription))
         .catch(e => console.log(e));
-        console.log("Negociation completed")
+      console.log("Negociation completed")
     }
 
     this.socketService.fromEvent<any>('phone.negociating').subscribe((sessionDescription: RTCSessionDescription) => {
-      this.sendAnswer({video : false, session : sessionDescription})
+      this.sendAnswer({ video: true, session: sessionDescription })
+    })
+
+    this.socketService.fromEvent<any>('phone.answer').subscribe((answer: RTCSessionDescriptionInit) => {
+      this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    });
+
+    this.socketService.fromEvent('phone.new-ice-candidate').subscribe(async (message: any) => {
+      const iceCandidat = new RTCIceCandidate(message);
+      try { await this.peerConnection.addIceCandidate(iceCandidat); } catch (e) { }
     })
   }
 
@@ -79,9 +88,11 @@ export class CallService {
 
   async sendAnswer(phoneCallAnswer: PhoneCallAnswer) {
     await this.peerConnection.setRemoteDescription(new RTCSessionDescription(phoneCallAnswer.session))
-    this.myStream = await this.getMediaStream(phoneCallAnswer.video);
-    this.addTracksToPeerConnection(this.myStream);
     const answer = await this.peerConnection.createAnswer();
+    if(!this.myStream){
+      this.myStream = await this.getMediaStream(phoneCallAnswer.video);
+      this.addTracksToPeerConnection(this.myStream);
+    }
     this.peerConnection.setLocalDescription(answer)
     this.socketService.emit('phone.answer', answer);
 
@@ -92,17 +103,32 @@ export class CallService {
     const screenTrack = stream.getVideoTracks()[0];
     if (this.videoTrack) {
       this.videoTrack.replaceTrack(screenTrack);
+      try{
+        this.videoTrack = this.peerConnection.addTrack(screenTrack, this.myStream)
+      }catch(e){
+        this.myStream.getVideoTracks().forEach(track => track.enabled = true);
+      }
     } else {
-      this.peerConnection.addTrack(screenTrack, this.myStream);
-      this.peerConnection.getSenders()[0].replaceTrack(screenTrack);
-      //this.myStream.addTrack(screenTrack);
-      // this.myStream.getVideoTracks().push(screenTrack)
+      console.log("no video track detected, set new ")
+      this.addTracksToPeerConnection(stream)
+    }
+  }
+
+  async stopScreenShare() {
+    if (this.myStream){
+      // this.peerConnection.removeTrack(this.videoTrack);
+      this.myStream.getVideoTracks().forEach(track => {
+        track.enabled = false;
+      });
+      console.log("All streams shutdown");
     }
   }
 
   public hangUp(): void {
     this.peerConnection.close();
-    this.myStream.getTracks().forEach(track => track.stop());
+    if (this.myStream) {
+      this.myStream.getTracks().forEach(track => track.stop());
+    }
     this.peerConnectionSubject.next(this.openRTCConnection());
     this.location.back()
   }
@@ -119,47 +145,34 @@ export class CallService {
       });
     } catch (e) {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      // @ts-ignore
-      // stream = await navigator.mediaDevices.getDisplayMedia({audio : true, video : true});
     }
     return stream;
   }
 
   async getDisplayMediaStream() {
     // @ts-ignore
-    return await navigator.mediaDevices.getDisplayMedia({ audio: false, video: true });
+    return await navigator.mediaDevices.getDisplayMedia({ audio: true, video: true });
   }
-
 
   addTracksToPeerConnection(stream: MediaStream): void {
     stream.getTracks().forEach((track: MediaStreamTrack) => {
-      if (track.kind == "video") {
         this.videoTrack = this.peerConnection.addTrack(track, stream);
-      } else {
-        this.peerConnection.addTrack(track, stream)
-      }
-
     });
   }
 
 
   public toggleMicrophone() {
-    this.myStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+    if (this.myStream)
+      this.myStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
   }
 
   public toggleCamera() {
-    this.myStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+    if (this.myStream)
+      this.myStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
   }
 
   public registerEvents(): void {
-    this.socketService.fromEvent<any>('phone.answer').subscribe((answer: RTCSessionDescriptionInit) => {
-      this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-    });
-
-    this.socketService.fromEvent('phone.new-ice-candidate').subscribe(async (message: any) => {
-      const iceCandidat = new RTCIceCandidate(message);
-      try { await this.peerConnection.addIceCandidate(iceCandidat); } catch (e) { }
-    })
+   
   }
 
   private openRTCConnection(): RTCPeerConnection {

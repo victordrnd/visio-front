@@ -6,6 +6,7 @@ import { HeaderComponent } from './header/header.component';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
     NzMenuModule,
     NzButtonModule,
     NzIconModule,
-    NzModalModule
+    NzModalModule,
+    RouterModule
   ],
   exports : [SidebarComponent,HeaderComponent, NzIconModule]
 })

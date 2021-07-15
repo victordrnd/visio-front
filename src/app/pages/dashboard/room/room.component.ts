@@ -20,7 +20,7 @@ export class RoomComponent implements OnInit {
  
   async startCall(video = false){
     await this.callService.startCall(video);
-    this.callService.registerEvents();
+    
     this.router.navigate(['/dashboard/video-call'], {state : {video : video}})
   }
 }

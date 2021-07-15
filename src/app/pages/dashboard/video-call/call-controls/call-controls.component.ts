@@ -8,13 +8,28 @@ import { CallService } from 'src/app/core/services/call.service';
 })
 export class CallControlsComponent implements OnInit, OnDestroy {
 
-  constructor(public callService : CallService) { }
+  isMuted: boolean = false;
+  isCamera: boolean = false;
+  isScreenSharing: boolean = false;
+  constructor(public callService: CallService) { }
+
+
   ngOnDestroy(): void {
     this.callService.hangUp();
   }
 
   ngOnInit(): void {
   }
-  
+
+  toggleScreenSharing() {
+    if (this.isScreenSharing){
+      this.callService.stopScreenShare();
+      this.isScreenSharing = false
+    }
+    else{
+      this.callService.startScreenShare()
+      this.isScreenSharing = true;
+    }
+  }
 
 }

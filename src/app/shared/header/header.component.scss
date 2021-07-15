@@ -2,3 +2,13 @@
     width: 50px;
     margin : 0px;
 }
+
+:host::ng-deep{
+    .ant-menu-horizontal > .ant-menu-item::after, .ant-menu-horizontal > .ant-menu-submenu::after {
+        left:0px;
+        right: 0px;
+    }
+    .ant-menu-horizontal {
+        line-height: 55px;
+    }
+}

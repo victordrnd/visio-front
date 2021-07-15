@@ -12,6 +12,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.callService.registerOnPhoneCallEvent();
+    this.callService.registerEvents();
   }
 
 }
