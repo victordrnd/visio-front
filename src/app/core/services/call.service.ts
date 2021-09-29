@@ -33,11 +33,9 @@ export class CallService {
         this.socketService.emit('phone.new-ice-candidate', ev.candidate)
     }
     this.peerConnection.onnegotiationneeded = (ev) => {
-      console.log("negotiation", ev);
       this.peerConnection.createOffer().then(d => this.peerConnection.setLocalDescription(d))
         .then(() => this.socketService.emit('phone.negociating', this.peerConnection.localDescription))
         .catch(e => console.log(e));
-      console.log("Negociation completed")
     }
 
     this.socketService.fromEvent<any>('phone.negociating').subscribe((sessionDescription: RTCSessionDescription) => {
@@ -116,11 +114,9 @@ export class CallService {
 
   async stopScreenShare() {
     if (this.myStream){
-      // this.peerConnection.removeTrack(this.videoTrack);
       this.myStream.getVideoTracks().forEach(track => {
         track.enabled = false;
       });
-      console.log("All streams shutdown");
     }
   }
 

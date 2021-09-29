@@ -12,13 +12,17 @@ import { AuthService } from 'src/app/core/services/auth.service';
 export class LoginComponent implements OnInit {
 
   form: any;
-  passwordVisible : boolean = false;
+  passwordVisible: boolean = false;
   loading = true;
   constructor(private fb: FormBuilder, private authService: AuthService,
     private router: Router,
-    private notificationService: NzNotificationService) {}
+    private notificationService: NzNotificationService) { }
 
   async ngOnInit() {
+    let is_connected = await this.authService.populate();
+    if(is_connected){
+      this.router.navigate(['/dashboard']);
+    }
     this.form = this.fb.group({
       email: [null, [Validators.required, Validators.email]],
       password: [null, [Validators.required]],
