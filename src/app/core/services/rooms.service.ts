@@ -16,4 +16,8 @@ export class RoomsService {
   public list() : Observable<Array<RoomModel>> {
     return this.http.get(environment.apiUrl + "/my/rooms").pipe(map((res: any) => res.rooms));
   }
+
+  public show(room_id : number) : Observable<RoomModel>{
+    return this.http.get(environment.apiUrl + `/rooms/${room_id}`) as Observable<RoomModel>;
+  }
 }

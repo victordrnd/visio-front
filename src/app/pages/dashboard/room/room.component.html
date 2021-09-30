@@ -1,6 +1,19 @@
 <nz-button-group>
-    <button nz-button nzType="primary" (click)="startCall(true)"><i nz-icon nzType="video-camera" nzTheme="fill"></i></button>
-    <button nz-button nzType="primary" (click)="startCall()"><i nz-icon nzType="phone" nzTheme="fill"></i></button>
-  </nz-button-group>
+  <button nz-button nzType="primary" (click)="startCall(true)"><i nz-icon nzType="video-camera"
+      nzTheme="fill"></i></button>
+  <button nz-button nzType="primary" (click)="startCall()"><i nz-icon nzType="phone" nzTheme="fill"></i></button>
+</nz-button-group>
 
- 
+
+
+
+<div class="footer">
+  <i nz-icon nzType="file-add" class="mx-2 text-primary h6 mt-2 cursor-pointer " nzTheme="fill"></i>
+  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+    <!-- <input type="text" nz-input placeholder="input search text" /> -->
+    <textarea nz-input  [nzAutosize]="{ minRows: 1, maxRows: 2 }" placeholder="" nzAutosize></textarea>
+  </nz-input-group>
+  <ng-template #suffixIconButton>
+    <button nz-button nzType="primary" nzSearch><i nz-icon nzType="send"></i></button>
+  </ng-template>
+</div>

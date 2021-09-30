@@ -1,18 +1,42 @@
 [nz-menu] {
-    //width: 240px;
-    height : 100%;
-    min-height: 92vh
+  //width: 240px;
+  height: 100%;
+  min-height: 94vh;
+  width:17vw
+}
+
+.ant-layout-sider {
+  position: relative;
+  min-width: 0;
+  background: #fff;
+  width: 240px !important;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+li {
+  outline: 0;
+}
+
+:host::ng-deep{
+  nz-avatar{
+    margin-right: 14px;
   }
-  
-  .ant-layout-sider {
-    position: relative;
-    min-width: 0;
-    background: #fff;
-    width : 240px !important;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s;
+  .rounded{
+    border-radius: 30px !important;
   }
-  
-  li{
-      outline : 0
+  .ant-comment-avatar{
+    display: block;
+    margin-top : auto;
+    margin-bottom: auto;
   }
+  .ant-comment-content{
+    font-size: 11px;
+  }
+  .ant-comment-content-author-name{
+    color: white;
+  }
+  .ant-comment-content-detail > p {
+    line-height: 14px;
+  }
+}
