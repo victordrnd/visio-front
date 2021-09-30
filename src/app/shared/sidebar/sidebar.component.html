@@ -1,36 +1,41 @@
 <ul nz-menu nzMode="inline" *ngIf="rooms">
     <li class="p-2">
         <nz-input-group class="rounded" [nzSuffix]="suffixIconSearch">
-            <input type="text" nz-input placeholder="Rechercher dans visio" [nzAutocomplete]="auto" />
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onChange($event)" nz-input
+                placeholder="Rechercher dans visio" [nzAutocomplete]="auto" />
             <nz-autocomplete #auto>
-                <nz-auto-option *ngFor="let room of filteredRooms" [nzValue]="room.id" [nzLabel]="room.label">
-                  {{ room.label }}
+                <nz-auto-option *ngFor="let room of filteredRooms" [routerLink]="'/dashboard/room/' + room.id"
+                    [nzValue]="room.id" [nzLabel]="room.label">
+                    {{ room.label }}
                 </nz-auto-option>
-              </nz-autocomplete>
+            </nz-autocomplete>
         </nz-input-group>
         <ng-template #suffixIconSearch>
             <i nz-icon nzType="search"></i>
         </ng-template>
-        
 
-        <!-- <nz-select nzMode="multiple" class="w-100" nzPlaceHolder="Rechercher dans Visio" [(ngModel)]="users_id">
-            <nz-option *ngFor="let user of users" [nzLabel]="user.firstname + ' ' +user.lastname " [nzValue]="user.id"></nz-option>
-          </nz-select> -->
     </li>
-    <li nz-menu-item *ngFor="let room of rooms" class="pl-1 py-4" [routerLink]="'/dashboard/room/' + room.id">
+    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
 
-        <!-- <nz-avatar nzIcon="user" nzSrc="//zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar> -->
+        <li nz-menu-item *cdkVirtualFor="let room of rooms" class="pl-1 py-4"
+            [routerLink]="'/dashboard/room/' + room.id">
 
-        <nz-comment nzAuthor="{{room.label | titlecase}}">
-            <nz-avatar
-              nz-comment-avatar
-              style="background-color: #1890ff" nzText="NG"
-            ></nz-avatar>
-            <nz-comment-content>
-              <p class="text-muted">We supply a series of design principles, practical patterns and high quality design resources (Sketch and</p>
-            </nz-comment-content>
-          </nz-comment>
-    </li>
+            <!-- <nz-avatar nzIcon="user" nzSrc="//zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar> -->
+
+            <nz-comment nzAuthor="{{room.label | titlecase}}">
+                <nz-avatar nz-comment-avatar [nzSize]="45" style="background-color: #1890ff" nzText="NG"></nz-avatar>
+                <nz-comment-content>
+                    <p class="text-muted message_preview">We supply a series of design principles, practical patterns
+                        and high quality
+                        design resources (Sketch and</p>
+                </nz-comment-content>
+            </nz-comment>
+        </li>
+    </cdk-virtual-scroll-viewport>
+
 
     <nz-empty *ngIf="rooms.length == 0"></nz-empty>
+
+    <button nz-button (click)="openCreateRoomModal()" class="send-message-btn" nzType="primary">Rédiger un message <i
+            nz-icon nzType="edit" nzTheme="outline"></i></button>
 </ul>

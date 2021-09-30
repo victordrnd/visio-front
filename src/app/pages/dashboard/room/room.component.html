@@ -5,13 +5,15 @@
 </nz-button-group>
 
 
-
+<div *ngIf="room">
+<p *ngFor="let message of room!.messages">{{message.message}}</p>
+</div>
 
 <div class="footer">
   <i nz-icon nzType="file-add" class="mx-2 text-primary h6 mt-2 cursor-pointer " nzTheme="fill"></i>
   <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
     <!-- <input type="text" nz-input placeholder="input search text" /> -->
-    <textarea nz-input  [nzAutosize]="{ minRows: 1, maxRows: 2 }" placeholder="" nzAutosize></textarea>
+    <textarea (keydown.enter)="$event.preventDefault(); sendMessage()" [(ngModel)]="current_message" nz-input  [nzAutosize]="{ minRows: 1, maxRows: 2 }" placeholder="" nzAutosize></textarea>
   </nz-input-group>
   <ng-template #suffixIconButton>
     <button nz-button nzType="primary" nzSearch><i nz-icon nzType="send"></i></button>

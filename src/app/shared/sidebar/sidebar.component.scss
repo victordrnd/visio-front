@@ -2,7 +2,7 @@
   //width: 240px;
   height: 100%;
   min-height: 94vh;
-  width:17vw
+  width: 19vw;
 }
 
 .ant-layout-sider {
@@ -18,25 +18,50 @@ li {
   outline: 0;
 }
 
-:host::ng-deep{
-  nz-avatar{
+.send-message-btn {
+  position: fixed;
+  bottom: 0px;
+  width: 18.9vw;
+  border-radius: 0px;
+  padding-bottom: 36px;
+  padding-top: 18px;
+}
+
+:host::ng-deep {
+  cdk-virtual-scroll-viewport {
+    height: 89vh;
+    min-height: 89vh;
+  }
+  nz-avatar {
     margin-right: 14px;
   }
-  .rounded{
+  .rounded {
     border-radius: 30px !important;
   }
-  .ant-comment-avatar{
+  .ant-comment-avatar {
     display: block;
-    margin-top : auto;
+    margin-top: auto;
     margin-bottom: auto;
   }
-  .ant-comment-content{
+  .ant-comment-content {
     font-size: 11px;
   }
-  .ant-comment-content-author-name{
+  .ant-comment-content-author-name {
     color: white;
+    font-size: 13px !important;
   }
   .ant-comment-content-detail > p {
     line-height: 14px;
+  }
+
+  .message_preview {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 220px;
+    display: inline-block;
+  }
+  .ant-menu-inline .ant-menu-item {
+    line-height: 24px !important;
   }
 }

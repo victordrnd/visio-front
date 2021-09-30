@@ -14,11 +14,15 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { FormsModule } from '@angular/forms';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CreateRoomModalComponent } from './components/create-room-modal/create-room-modal.component'
 @NgModule({
   declarations: [
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    CreateRoomModalComponent
   ],
   imports: [
     CommonModule,
@@ -34,8 +38,10 @@ import { FormsModule } from '@angular/forms';
     RouterModule,
     NzCommentModule,
     NzSelectModule,
-    NzAutocompleteModule
+    NzAutocompleteModule,
+    ScrollingModule,
   ],
-  exports : [SidebarComponent,HeaderComponent, NzIconModule]
+  exports : [SidebarComponent,HeaderComponent, NzIconModule],
+  entryComponents : [CreateRoomModalComponent]
 })
 export class SharedModule { }

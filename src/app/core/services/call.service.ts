@@ -87,7 +87,7 @@ export class CallService {
   async sendAnswer(phoneCallAnswer: PhoneCallAnswer) {
     await this.peerConnection.setRemoteDescription(new RTCSessionDescription(phoneCallAnswer.session))
     const answer = await this.peerConnection.createAnswer();
-    if(!this.myStream){
+    if (!this.myStream) {
       this.myStream = await this.getMediaStream(phoneCallAnswer.video);
       this.addTracksToPeerConnection(this.myStream);
     }
@@ -101,9 +101,9 @@ export class CallService {
     const screenTrack = stream.getVideoTracks()[0];
     if (this.videoTrack) {
       this.videoTrack.replaceTrack(screenTrack);
-      try{
+      try {
         this.videoTrack = this.peerConnection.addTrack(screenTrack, this.myStream)
-      }catch(e){
+      } catch (e) {
         this.myStream.getVideoTracks().forEach(track => track.enabled = true);
       }
     } else {
@@ -113,7 +113,7 @@ export class CallService {
   }
 
   async stopScreenShare() {
-    if (this.myStream){
+    if (this.myStream) {
       this.myStream.getVideoTracks().forEach(track => {
         track.enabled = false;
       });
@@ -136,7 +136,7 @@ export class CallService {
         audio: true, video: video ? {
           width: { ideal: 4096 },
           height: { ideal: 2160 },
-          facingMode: "environment"
+          facingMode: "user",
         } : false
       });
     } catch (e) {
@@ -152,7 +152,7 @@ export class CallService {
 
   addTracksToPeerConnection(stream: MediaStream): void {
     stream.getTracks().forEach((track: MediaStreamTrack) => {
-        this.videoTrack = this.peerConnection.addTrack(track, stream);
+      this.videoTrack = this.peerConnection.addTrack(track, stream);
     });
   }
 
@@ -168,7 +168,7 @@ export class CallService {
   }
 
   public registerEvents(): void {
-   
+
   }
 
   private openRTCConnection(): RTCPeerConnection {

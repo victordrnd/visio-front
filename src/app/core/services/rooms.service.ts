@@ -20,4 +20,8 @@ export class RoomsService {
   public show(room_id : number) : Observable<RoomModel>{
     return this.http.get(environment.apiUrl + `/rooms/${room_id}`) as Observable<RoomModel>;
   }
+
+  public store(user_ids : Array<number>){
+    return this.http.post(environment.apiUrl + '/rooms', user_ids);
+  }
 }

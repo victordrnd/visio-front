@@ -18,7 +18,7 @@ export class AuthGuardService implements CanActivate {
             const result = await this.authService.populate();
             if (!result) {
               //this.notificationService.warning("Erreur authentification", "Cet espace n'est accessible qu'une fois authentifié")
-              this.router.navigate(['']);
+              //this.router.navigate(['']);
             }
             return result;
           } catch (error) {

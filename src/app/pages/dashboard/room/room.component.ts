@@ -4,6 +4,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { Socket } from 'ngx-socket-io';
 import { RoomModel } from 'src/app/core/models/room.model';
 import { CallService } from 'src/app/core/services/call.service';
+import { MessageService } from 'src/app/core/services/message.service';
 import { RoomsService } from 'src/app/core/services/rooms.service';
 
 @Component({
@@ -15,10 +16,13 @@ export class RoomComponent implements OnInit {
   constructor(private router : Router,
     private callService : CallService,
     private activatedRoute : ActivatedRoute,
-    private roomService : RoomsService) { }
+    private roomService : RoomsService,
+    private messageService : MessageService) { }
 
   room_id : number = 0;
   room : RoomModel | undefined;
+
+  current_message = "";
   ngOnInit(): void {
     this.room_id = this.activatedRoute.snapshot.params.id;
     this.fetchRoom()
@@ -31,8 +35,20 @@ export class RoomComponent implements OnInit {
  
   async startCall(video = false){
     await this.callService.startCall(video);
-    
     this.router.navigate(['/dashboard/video-call'], {state : {video : video}})
+  }
+
+  async sendMessage(){
+    console.log(this.current_message);
+    if(this.current_message.length){
+      const obj = {
+        room_id : this.room!.id,
+        type : 'text',
+        message : this.current_message
+      }
+      await this.messageService.send(obj).toPromise();
+      this.current_message = "";
+    }
   }
 }
 
