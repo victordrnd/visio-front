@@ -80,6 +80,7 @@ export class CallService {
     this.addTracksToPeerConnection(this.myStream);
     let sessionDescription: RTCSessionDescriptionInit = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(sessionDescription);
+    console.log('Phone calling');
     this.socketService.emit('phone.calling', { session: sessionDescription, video })
   }
 

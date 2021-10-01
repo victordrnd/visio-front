@@ -22,6 +22,6 @@ export class RoomsService {
   }
 
   public store(user_ids : Array<number>){
-    return this.http.post(environment.apiUrl + '/rooms', user_ids);
+    return this.http.post(environment.apiUrl + '/rooms', {user_ids});
   }
 }
