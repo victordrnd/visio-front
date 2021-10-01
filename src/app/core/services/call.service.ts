@@ -141,7 +141,7 @@ export class CallService {
         } : false
       });
     } catch (e) {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
     }
     return stream;
   }

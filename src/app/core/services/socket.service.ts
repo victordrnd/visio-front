@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Socket } from 'ngx-socket-io';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -11,14 +12,13 @@ export class SocketService {
   constructor(private socketService: Socket) { }
 
 
-  public init(user: any): void {
-    console.log("test socket 1");
-    this.socketService.on('connection', () => {
-      console.log("test socket 2");
-      this.socketService.emit('login', user);
-    });
+  public init(data: any): void {
+    console.log("Init socket");
+    this.socketService.emit('login', data.user);
+  }
 
-    this.socketService.emit('login', user);
+  public onNewConnection(): Observable<any> {
+    return this.socketService.fromEvent<any>('new.user');
   }
 
   public calling(roomId: string, sessionDescription: any): void {
