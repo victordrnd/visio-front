@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { distinctUntilChanged, map, catchError } from "rxjs/operators";
+import { SocketService } from "../../../app/core/services/socket.service"
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<any>(false);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private socketService: SocketService) {}
 
   async populate() {
     if (this.getToken()) {
@@ -51,6 +52,8 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/auth/login`, credentials).pipe(
       map((res: any) => {
         this.setAuth(res);
+        this.socketService.init(res);
+        console.log("TESTTT", res);
         return res;
       }),
       catchError(this.formatErrors)

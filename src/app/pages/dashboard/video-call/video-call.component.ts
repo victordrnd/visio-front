@@ -13,12 +13,11 @@ export class VideoCallComponent implements OnInit {
   @ViewChild('myVideo') video!: ElementRef;
   peerConnection!: RTCPeerConnection;
   
-  constructor(private socketService: Socket,
-    private callService : CallService,
-    private route : ActivatedRoute) { }
+  constructor(private callService : CallService) { }
 
   async ngOnInit(): Promise<any> {
     this.peerConnection = this.callService.peerConnection;
+
     
     this.peerConnection.ontrack = (ev: any) => {
       console.log("Stream received", ev); 
