@@ -1,23 +1,24 @@
-<div class="call-controls">
-    <nz-card style="width: 300px;margin-top: 16px" [nzActions]="[actionMicrophone, actionCamera,actionHangUp, actionEllipsis]">
-    </nz-card>
-    <ng-template #actionMicrophone>
-        <i nz-icon [nzType]="isMuted ? 'audio-muted' : 'audio'" (click)="callService.toggleMicrophone();isMuted=!isMuted" nzTheme="outline" [class.text-primary]="!isMuted"></i>
-    </ng-template>
-    <ng-template #actionCamera>
-        <i nz-icon nzType="video-camera" (click)="callService.toggleCamera()" nzTheme="fill"></i>
-    </ng-template>
-    <ng-template #actionHangUp>
-        <i nz-icon nzType="api" (click)="callService.hangUp()" nzTheme="outline"></i>
-    </ng-template>
-    <ng-template #actionEllipsis>
-        <i nz-icon nzType="ellipsis" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="topLeft"></i>
-        <nz-dropdown-menu #menu="nzDropdownMenu">
-            <ul nz-menu>
-              <li nz-menu-item (click)="toggleScreenSharing()">{{isScreenSharing ? "Couper le partage" : 'Partager mon écran'}}</li>
-              <li nz-menu-item>2nd menu item length</li>
-              <li nz-menu-item>3rd menu item length</li>
-            </ul>
-          </nz-dropdown-menu>
-    </ng-template>
-</div>
+<nz-card style="width: 300px;margin-top: 16px"
+    [nzActions]="[actionMicrophone, actionCamera,actionHangUp, actionEllipsis]">
+</nz-card>
+<ng-template #actionMicrophone>
+    <i nz-icon [nzType]="isMuted ? 'audio-muted' : 'audio'" (click)="callService.toggleMicrophone();isMuted=!isMuted"
+        nzTheme="outline" [class.text-primary]="!isMuted"></i>
+</ng-template>
+<ng-template #actionCamera>
+    <i nz-icon nzType="video-camera" (click)="callService.toggleCamera(); onCameraToggled.emit()" nzTheme="fill"></i>
+</ng-template>
+<ng-template #actionHangUp>
+    <i nz-icon nzType="api" (click)="callService.hangUp()" nzTheme="outline"></i>
+</ng-template>
+<ng-template #actionEllipsis>
+    <i nz-icon nzType="ellipsis" nz-dropdown [nzDropdownMenu]="menu" nzPlacement="topLeft"></i>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+            <li nz-menu-item (click)="toggleScreenSharing()">{{isScreenSharing ? "Couper le partage" : 'Partager mon
+                écran'}}</li>
+            <li nz-menu-item>2nd menu item length</li>
+            <li nz-menu-item>3rd menu item length</li>
+        </ul>
+    </nz-dropdown-menu>
+</ng-template>

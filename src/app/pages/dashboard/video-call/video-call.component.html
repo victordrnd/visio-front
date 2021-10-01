@@ -1,2 +1,6 @@
 <video autoplay playsinline #myVideo class="w-100" style="height:93vh"></video>
-<app-call-controls></app-call-controls>
+<div class="call-controls">
+    <app-call-controls (onCameraToggled)="toggleCamera()"></app-call-controls>
+</div>
+
+<video autoplay playsinline #videoFallback [class.invisible]="hideVideo" class="video-fallback"></video>

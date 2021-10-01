@@ -1,0 +1,6 @@
+<label>Membres de la conversation : </label>
+<nz-select class="w-100 mb-5" [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple" nzPlaceHolder="Selectionnez les membres de la conversation"
+    [(ngModel)]="user_ids">
+    <nz-option *ngFor="let user of users" [nzLabel]="user.firstname + ' ' +user.lastname " [nzValue]="user.id"></nz-option>
+</nz-select>
+<ng-template #tagPlaceHolder let-selectedList>et {{ selectedList.length }} autres selectionnés</ng-template>

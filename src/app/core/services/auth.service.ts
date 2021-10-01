@@ -4,6 +4,7 @@ import { BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { distinctUntilChanged, map, catchError } from "rxjs/operators";
 import { SocketService } from "../../../app/core/services/socket.service"
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,9 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<any>(false);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient, private socketService: SocketService) {}
+  constructor(private http: HttpClient,
+    private router : Router,
+    private socketService: SocketService) {}
 
   async populate() {
     if (this.getToken()) {
@@ -68,6 +71,7 @@ export class AuthService {
     this.destroyToken();
     this.currentUserSubject.next({});
     this.isAuthenticatedSubject.next(false);
+    this.router.navigate(['/auth/login'])
   }
 
   private formatErrors(error: any) {

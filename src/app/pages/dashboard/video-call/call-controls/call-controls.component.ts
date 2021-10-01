@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CallService } from 'src/app/core/services/call.service';
 
 @Component({
@@ -11,6 +11,7 @@ export class CallControlsComponent implements OnInit, OnDestroy {
   isMuted: boolean = false;
   isCamera: boolean = false;
   isScreenSharing: boolean = false;
+  @Output() onCameraToggled : EventEmitter<void> = new EventEmitter();
   constructor(public callService: CallService) { }
 
 

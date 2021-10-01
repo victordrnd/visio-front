@@ -16,6 +16,8 @@ import { VideoCallComponent } from './video-call/video-call.component';
 import { CallControlsComponent } from './video-call/call-controls/call-controls.component';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzInputModule } from 'ng-zorro-antd/input';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -34,6 +36,8 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     NzSliderModule,
     SocketIoModule,
     NzCardModule,
+    NzInputModule,
+    NzEmptyModule,
     NzDropDownModule
   ],
   bootstrap : [DashboardComponent]
