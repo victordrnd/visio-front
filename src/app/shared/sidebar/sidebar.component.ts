@@ -28,14 +28,6 @@ export class SidebarComponent implements OnInit {
 
   async fetchRooms() {
     this.rooms = await this.roomService.list().toPromise();
-    for (let i = 0; i < 100; i++) {
-      let obj: RoomModel = {
-        id: 1,
-        picture: "",
-        label: "test"
-      }
-      this.rooms.push(obj)
-    }
     this.filteredRooms = Object.assign([], this.rooms);
     this.cdr.detectChanges();
   }
