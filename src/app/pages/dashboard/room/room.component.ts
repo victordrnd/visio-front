@@ -13,6 +13,7 @@ import { RoomsService } from 'src/app/core/services/rooms.service';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit {
+  @ViewChild('messageList') messageList!: ElementRef;
   constructor(private router : Router,
     private callService : CallService,
     private activatedRoute : ActivatedRoute,
@@ -25,7 +26,8 @@ export class RoomComponent implements OnInit {
   current_message = "";
   ngOnInit(): void {
     this.room_id = this.activatedRoute.snapshot.params.id;
-    this.fetchRoom()
+    this.fetchRoom();
+    //this.messageList.nativeElement.scrollIntoView({behavior: "smooth"});
   }
 
 
