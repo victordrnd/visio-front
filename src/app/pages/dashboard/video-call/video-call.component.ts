@@ -25,8 +25,8 @@ export class VideoCallComponent implements OnInit {
       this.video.nativeElement.srcObject = ev.streams[0];
     };
    
-    const stream = await this.callService.getMediaStream(true);
-    this.videoFallback.nativeElement.srcObject = stream;
+    // const stream = await this.callService.getMediaStream(true);
+    // this.videoFallback.nativeElement.srcObject = stream;
   }
 
   toggleCamera(){

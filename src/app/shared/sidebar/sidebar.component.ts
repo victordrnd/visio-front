@@ -48,7 +48,9 @@ export class SidebarComponent implements OnInit {
       nzTitle : "Démarrer une conversation",
       nzOnOk : (component) => {
         if(component.user_ids.length){
-          
+          this.roomService.store(component.user_ids).toPromise().then(res => {
+            //Send to users socket
+          });
         }
       }
     })
