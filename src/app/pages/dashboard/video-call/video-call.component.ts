@@ -20,6 +20,7 @@ export class VideoCallComponent implements OnInit {
 
   async ngOnInit(): Promise<any> {
     this.peerConnection = this.callService.peerConnection;
+
     
     this.peerConnection.ontrack = (ev: any) => {
       this.video.nativeElement.srcObject = ev.streams[0];
