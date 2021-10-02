@@ -5,13 +5,14 @@ import { environment } from 'src/environments/environment';
 import { distinctUntilChanged, map, catchError } from "rxjs/operators";
 import { SocketService } from "../../../app/core/services/socket.service"
 import { Router } from '@angular/router';
+import { UserModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private currentUserSubject = new BehaviorSubject<any>({});
+  private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
   public currentUser = this.currentUserSubject
     .asObservable()
     .pipe(distinctUntilChanged());
@@ -69,7 +70,7 @@ export class AuthService {
 
   purgeAuth() {
     this.destroyToken();
-    this.currentUserSubject.next({});
+    this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/auth/login'])
   }
