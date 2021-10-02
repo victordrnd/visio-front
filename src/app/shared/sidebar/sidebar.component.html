@@ -25,9 +25,7 @@
             <nz-comment nzAuthor="{{room.label | titlecase}}">
                 <nz-avatar nz-comment-avatar [nzSize]="45" style="background-color: #1890ff" nzText="NG"></nz-avatar>
                 <nz-comment-content>
-                    <p class="text-muted message_preview">We supply a series of design principles, practical patterns
-                        and high quality
-                        design resources (Sketch and</p>
+                    <p class="text-muted message_preview">{{room.last_message?.message}}  · {{room.last_message?.created_at | date: 'H:mm'}}</p>
                 </nz-comment-content>
             </nz-comment>
         </li>
