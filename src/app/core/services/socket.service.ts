@@ -30,8 +30,8 @@ export class SocketService {
   }
 
   public onNewMessage(): void  {
-    this.socketService.on('message.send', (message: string, type: string, user_id: string) => {
-      console.log('New message ', message, type, user_id);
+    this.socketService.on('message.send', (message: string, type: string, user_id: string, room_id : number) => {
+      console.log('New message ', message, type, user_id, room_id);
     });
   }
 

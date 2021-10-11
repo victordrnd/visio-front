@@ -60,7 +60,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
         message: this.current_message,
       }
       await this.messageService.send(obj).toPromise().then(res => {
-        this.socketService.sendMessage({message : this.current_message, type : 'text', users_ids : this.users_ids});
+        this.socketService.sendMessage({message : this.current_message, type : 'text', users_ids : this.users_ids, room_id : this.room!.id});
       });
       this.current_message = "";
     }

@@ -70,7 +70,7 @@ export class CallService {
     })
   }
 
-  async startCall(video = false, users_ids : Array<any> = []) {
+  async startCall(video = false, users_ids: Array<any> = []) {
     console.log(users_ids);
     this.peerConnection.onicecandidate = (ev: RTCPeerConnectionIceEvent) => {
       if (ev.candidate) {
@@ -176,7 +176,12 @@ export class CallService {
   private openRTCConnection(): RTCPeerConnection {
     return new RTCPeerConnection({
       iceServers: [
-        { urls: "stun:stun.l.google.com:19302" }
+        { urls: "stun:stun.l.google.com:19302" },
+        {
+          urls: "turn:srv1.victordurand.fr",
+          username: "visio",
+          credential: "123+aze"
+        }
       ]
     });
   }
