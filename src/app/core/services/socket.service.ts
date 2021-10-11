@@ -29,9 +29,9 @@ export class SocketService {
     this.socketService.emit('phone.answer', roomId, answer);
   }
 
-  public newMessage(): void  {
-    this.socketService.on('message.send', (message: string, type: string) => {
-      console.log('New message ', message, type);
+  public onNewMessage(): void  {
+    this.socketService.on('message.send', (message: string, type: string, user_id: string) => {
+      console.log('New message ', message, type, user_id);
     });
   }
 
