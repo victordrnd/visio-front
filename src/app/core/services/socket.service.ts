@@ -13,6 +13,7 @@ export class SocketService {
 
 
   public init(data: any): void {
+    console.log(data);
     console.log("Init socket");
     this.socketService.emit('login', data.user);
   }
