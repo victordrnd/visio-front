@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { distinctUntilChanged, map, catchError } from "rxjs/operators";
 import { SocketService } from "../../../app/core/services/socket.service"
@@ -11,11 +11,8 @@ import { UserModel } from '../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-
-  private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
-  public currentUser = this.currentUserSubject
-    .asObservable()
-    .pipe(distinctUntilChanged());
+  current_user: any;
+  public currentUser = new Subject;
 
   private isAuthenticatedSubject = new BehaviorSubject<any>(false);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
@@ -30,7 +27,7 @@ export class AuthService {
         const res: any = await this.http
           .get(`${environment.apiUrl}/auth/current`)
           .toPromise();
-        this.setAuth(res);
+        this.setAuth({user : res});
         this.isAuthenticatedSubject.next(true);
         return true;
       } catch (error) {
@@ -48,7 +45,8 @@ export class AuthService {
     if (token) {
       this.saveToken(token);
     }
-    this.currentUserSubject.next(user);
+    this.current_user = user;
+    this.currentUser.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 
@@ -70,7 +68,7 @@ export class AuthService {
 
   purgeAuth() {
     this.destroyToken();
-    this.currentUserSubject.next(null);
+    this.currentUser.next(null);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/auth/login'])
   }
