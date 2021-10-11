@@ -30,6 +30,12 @@ export class SocketService {
     this.socketService.emit('phone.answer', roomId, answer);
   }
 
+  public newMessage(): void  {
+    this.socketService.on('message.send', (message: string, type: string) => {
+      console.log('New message ', message, type);
+    });
+  }
+
   public listenCalling(): void {
     this.socketService.on('phone.calling', (sessionDescription: any) => {
       console.log('LISTEN_CALLING : ', sessionDescription);
