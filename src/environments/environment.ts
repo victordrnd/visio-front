@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   socketServer : "http://localhost:3000",
-  apiUrl : "http://localhost:8080/public/api"
+  apiUrl : "http://192.168.43.205:8080/public/api"
 };
 
 /*
