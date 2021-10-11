@@ -13,7 +13,6 @@ export class SocketService {
 
 
   public init(data: any): void {
-    console.log(data);
     console.log("Init socket");
     this.socketService.emit('login', data.user);
   }
@@ -34,6 +33,12 @@ export class SocketService {
     this.socketService.on('phone.calling', (sessionDescription: any) => {
       console.log('LISTEN_CALLING : ', sessionDescription);
     })
+  }
+
+
+  //Messages
+  public sendMessage({message, users_ids, type } : any){
+    this.socketService.emit('message.new', message, users_ids, type);
   }
 
 }

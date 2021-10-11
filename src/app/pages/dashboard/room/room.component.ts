@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { CallService } from 'src/app/core/services/call.service';
 import { MessageService } from 'src/app/core/services/message.service';
 import { RoomsService } from 'src/app/core/services/rooms.service';
+import { SocketService } from 'src/app/core/services/socket.service';
 
 @Component({
   selector: 'app-room',
@@ -22,12 +23,14 @@ export class RoomComponent implements OnInit, AfterViewInit {
     private activatedRoute: ActivatedRoute,
     private roomService: RoomsService,
     private messageService: MessageService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private socketService : SocketService) { }
 
 
   room_id: number = 0;
   room: RoomModel | undefined;
   current_message = "";
+  users_ids = [] as any;
   ngOnInit(): void {
     this.room_id = this.activatedRoute.snapshot.params.id;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -39,12 +42,12 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
   async fetchRoom() {
     this.room = await this.roomService.show(this.room_id).toPromise();
+    this.users_ids = this.room!.users!.map(user_room => user_room.user_id) as Array<any>;
     this.scrollDown();
   }
 
   async startCall(video = false) {
-    const users_ids = this.room!.users!.map(user_room => user_room.user_id);
-    await this.callService.startCall(video, users_ids);
+    await this.callService.startCall(video, this.users_ids);
     this.router.navigate(['/dashboard/video-call'], { state: { video: video } })
   }
 
@@ -54,9 +57,11 @@ export class RoomComponent implements OnInit, AfterViewInit {
       const obj = {
         room_id: this.room!.id,
         type: 'text',
-        message: this.current_message
+        message: this.current_message,
       }
-      await this.messageService.send(obj).toPromise();
+      await this.messageService.send(obj).toPromise().then(res => {
+        this.socketService.sendMessage({message : this.current_message, type : 'text', users_ids : this.users_ids});
+      });
       this.current_message = "";
     }
   }
