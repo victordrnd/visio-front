@@ -82,7 +82,7 @@ export class CallService {
     let sessionDescription: RTCSessionDescriptionInit = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(sessionDescription);
     console.log('Phone calling');
-    this.socketService.emit('phone.calling', { session: sessionDescription, video })
+    this.socketService.emit('phone.calling', { session: sessionDescription, video, users_ids })
   }
 
 
