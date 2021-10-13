@@ -6,6 +6,8 @@ import { distinctUntilChanged, map, catchError } from "rxjs/operators";
 import { SocketService } from "../../../app/core/services/socket.service"
 import { Router } from '@angular/router';
 import { UserModel } from '../models/user.model';
+import { UserService } from './user.service';
+import { RoomsService } from './rooms.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,8 @@ export class AuthService {
 
   constructor(private http: HttpClient,
     private router : Router,
-    private socketService: SocketService) {}
+    private socketService: SocketService,
+    private roomService : RoomsService) {}
 
   async populate() {
     if (this.getToken()) {
@@ -46,6 +49,9 @@ export class AuthService {
       this.saveToken(token);
     }
     this.current_user = user;
+    if(!this.current_user.rooms){
+      this.current_user.rooms = await this.roomService.list().toPromise()
+    }
     this.currentUser.next(user);
     this.isAuthenticatedSubject.next(true);
   }

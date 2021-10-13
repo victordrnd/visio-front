@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from 
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Socket } from 'ngx-socket-io';
+import { Subscription } from 'rxjs';
 import { RoomModel } from 'src/app/core/models/room.model';
 import { UserModel } from 'src/app/core/models/user.model';
 import { AuthService } from 'src/app/core/services/auth.service';
@@ -24,17 +25,19 @@ export class RoomComponent implements OnInit, AfterViewInit {
     private roomService: RoomsService,
     private messageService: MessageService,
     private authService: AuthService,
-    private socketService : SocketService) { }
+    private socketService: SocketService) { }
 
 
   room_id: number = 0;
   room: RoomModel | undefined;
   current_message = "";
   users_ids = [] as any;
+  subscriptions: Array<Subscription> = [];
   ngOnInit(): void {
     this.room_id = this.activatedRoute.snapshot.params.id;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.fetchRoom();
+    this.registerOnMessageSubscriber();
   }
 
   ngAfterViewInit(): void {
@@ -60,21 +63,28 @@ export class RoomComponent implements OnInit, AfterViewInit {
         message: this.current_message,
       }
       await this.messageService.send(obj).toPromise().then(res => {
-        this.socketService.sendMessage({message : this.current_message, type : 'text', users_ids : this.users_ids, room_id : this.room!.id});
+        this.socketService.sendMessage({ message: this.current_message, type: 'text', users_ids: this.users_ids, room_id: this.room!.id });
       });
       this.current_message = "";
     }
   }
 
 
-  private scrollDown() {
-    //console.log(this.messageList.elementRef.nativeElement)
-    this.messageList.scrollToIndex(this.room!.messages!.length - 1);
-    setTimeout(() => {
-      const items = document.getElementsByClassName("message_container");
-      items[0].scrollIntoView();
-    }, 10);
+  registerOnMessageSubscriber() {
+    this.socketService.onNewMessage().subscribe((message: any)=> {
+      console.log(message)
+    })
   }
+
+
+  private scrollDown() {
+  //console.log(this.messageList.elementRef.nativeElement)
+  this.messageList.scrollToIndex(this.room!.messages!.length - 1);
+  setTimeout(() => {
+    const items = document.getElementsByClassName("message_container");
+    items[0].scrollIntoView();
+  }, 10);
+}
 }
 
 

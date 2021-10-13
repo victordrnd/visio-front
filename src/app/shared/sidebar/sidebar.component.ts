@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { RoomModel } from 'src/app/core/models/room.model';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { RoomsService } from 'src/app/core/services/rooms.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { CreateRoomModalComponent } from '../components/create-room-modal/create-room-modal.component';
@@ -13,7 +14,7 @@ import { CreateRoomModalComponent } from '../components/create-room-modal/create
 export class SidebarComponent implements OnInit {
 
   constructor(private roomService: RoomsService,
-     private userService: UserService,
+     private authService: AuthService,
      private cdr: ChangeDetectorRef,
      private modalService : NzModalService) { }
   rooms: Array<RoomModel> = [];
@@ -28,6 +29,7 @@ export class SidebarComponent implements OnInit {
 
   async fetchRooms() {
     this.rooms = await this.roomService.list().toPromise();
+    this.authService.current_user.rooms = this.rooms;
     this.filteredRooms = Object.assign([], this.rooms);
     this.cdr.detectChanges();
   }

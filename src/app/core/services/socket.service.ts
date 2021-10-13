@@ -29,12 +29,7 @@ export class SocketService {
     this.socketService.emit('phone.answer', roomId, answer);
   }
 
-  public onNewMessage(): void  {
-    this.socketService.on('message.send', (message: string, type: string, user_id: string, room_id : number) => {
-      console.log('New message ', message, type, user_id, room_id);
-    });
-  }
-
+  
   public listenCalling(): void {
     this.socketService.on('phone.calling', (sessionDescription: any) => {
       console.log('LISTEN_CALLING : ', sessionDescription);
@@ -45,6 +40,10 @@ export class SocketService {
   //Messages
   public sendMessage({message, users_ids, type } : any){
     this.socketService.emit('message.new', message, users_ids, type);
+  }
+
+  public onNewMessage(): Observable<any>  {
+    return this.socketService.fromEvent<any>('message.send');
   }
 
 }
