@@ -30,7 +30,7 @@ const config: SocketIoConfig = { url: environment.socketServer, options: { trans
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     BrowserModule,

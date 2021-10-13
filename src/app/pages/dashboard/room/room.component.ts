@@ -88,8 +88,11 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
 
   private scrollDown() {
-    console.log(this.messageList.nativeElement.scrollHeight)
     this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight
+    setTimeout(() => {
+      const items = document.getElementsByClassName("message_container");
+      items[0].scrollIntoView();
+    }, 10);
   }
 }
 

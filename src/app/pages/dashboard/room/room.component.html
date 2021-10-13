@@ -8,23 +8,17 @@
 <div itemSize="20" class="scrollable" #messageList>
   <!-- <div class="scrollable" #messageList> -->
   <div class="messages" *ngIf="room">
-    <div class="message_container" [class.reply]="message.user_id == current_user.id" [class.not-reply]="message.user_id != current_user.id" *ngFor="let message of room!.messages">
-      <div class="avatar" *ngIf="message.user_id != current_user.id"
+    <div class="message_container" [class.reply]="message.user_id == current_user.id"
+      [class.not-reply]="message.user_id != current_user.id" *ngFor="let message of room!.messages">
+      <!-- <div class="avatar" *ngIf="message.user_id != current_user.id"
         style="background-image: url('https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/robot-face.png');">
-      </div>
+      </div> -->
+      <nz-avatar class="avatar" *ngIf="message.user_id != current_user.id" nzIcon="user" nzSize="large" style="vertical-align: middle;"></nz-avatar>
       <div class="message">
-        <p class="text">{{message.message}}</p>
+        <p class="text">{{message.message }}</p>
       </div>
     </div>
 
-    <div class="message_container reply">
-      <!-- <div class="avatar"
-        style="background-image: url('https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/robot-face.png');">
-      </div> -->
-      <div class="message ">
-        <p class="text">fddf</p>
-      </div>
-    </div>
   </div>
   <!-- </div> -->
 </div>
@@ -33,8 +27,8 @@
   <i nz-icon nzType="file-add" class="mx-2 text-primary h6 mt-2 cursor-pointer " nzTheme="fill"></i>
   <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
     <!-- <input type="text" nz-input placeholder="input search text" /> -->
-    <textarea maxlength="250" (keydown.enter)="$event.preventDefault(); sendMessage()" [(ngModel)]="current_message" nz-input
-      [nzAutosize]="{ minRows: 1, maxRows: 2 }" placeholder="" nzAutosize></textarea>
+    <textarea maxlength="250" (keydown.enter)="$event.preventDefault(); sendMessage()" [(ngModel)]="current_message"
+      nz-input [nzAutosize]="{ minRows: 1, maxRows: 2 }" placeholder="" nzAutosize></textarea>
   </nz-input-group>
   <ng-template #suffixIconButton>
     <button nz-button nzType="primary" nzSearch><i nz-icon nzType="send"></i></button>

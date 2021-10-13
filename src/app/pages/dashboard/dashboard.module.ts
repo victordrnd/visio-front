@@ -19,6 +19,7 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -40,7 +41,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     NzInputModule,
     NzEmptyModule,
     NzDropDownModule,
-    ScrollingModule
+    ScrollingModule,
+    NzAvatarModule
   ],
   bootstrap : [DashboardComponent]
 })

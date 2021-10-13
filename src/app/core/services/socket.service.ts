@@ -22,7 +22,7 @@ export class SocketService {
   }
 
   public calling(roomId: string, sessionDescription: any): void {
-      this.socketService.emit('phone.calling', roomId, sessionDescription);
+      this.socketService.emit('phone.calling', roomId, true,  sessionDescription);
   }
 
   public answer(roomId: string, answer: any): void  {

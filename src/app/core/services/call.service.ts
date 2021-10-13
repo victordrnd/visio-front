@@ -138,7 +138,7 @@ export class CallService {
         audio: true, video: video ? {
           width: { ideal: 4096 },
           height: { ideal: 2160 },
-          facingMode: "user",
+          //facingMode: "user",
         } : false
       });
     } catch (e) {
@@ -177,11 +177,11 @@ export class CallService {
     return new RTCPeerConnection({
       iceServers: [
         { urls: "stun:stun.l.google.com:19302" },
-        {
-          urls: "turn:srv1.victordurand.fr",
-          username: "visio",
-          credential: "123+aze"
-        }
+        // {
+        //   urls: "turn:srv1.victordurand.fr",
+        //   username: "visio",
+        //   credential: "123+aze"
+        // }
       ]
     });
   }
