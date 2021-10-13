@@ -18,7 +18,7 @@ import { SocketService } from 'src/app/core/services/socket.service';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit, AfterViewInit {
-  @ViewChild('messageList') messageList!: CdkVirtualScrollViewport;
+  @ViewChild('messageList') messageList!: ElementRef;
   constructor(private router: Router,
     private callService: CallService,
     private activatedRoute: ActivatedRoute,
@@ -46,7 +46,6 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
   async fetchRoom() {
     this.room = await this.roomService.show(this.room_id).toPromise();
-    console.log(this.room);
     this.users_ids = this.room!.users!.map(user_room => user_room.user_id) as Array<any>;
     this.scrollDown();
   }
@@ -57,7 +56,6 @@ export class RoomComponent implements OnInit, AfterViewInit {
   }
 
   async sendMessage() {
-    console.log(this.current_message);
     if (this.current_message.length) {
       const obj = {
         room_id: this.room!.id,
@@ -74,6 +72,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
         }
         this.socketService.sendMessage(obj);
         this.room?.messages?.unshift(obj);
+        this.scrollDown();
       });
       this.current_message = "";
     }
@@ -83,19 +82,14 @@ export class RoomComponent implements OnInit, AfterViewInit {
   registerOnMessageSubscriber() {
     this.socketService.onNewMessage().subscribe(obj => {
       this.room?.messages?.unshift(obj);
-      console.log("Liste messages", this.room?.messages)
-      console.log("Message received ", obj);
+      this.scrollDown()
     })
   }
 
 
   private scrollDown() {
-    //console.log(this.messageList.elementRef.nativeElement)
-    //this.messageList.scrollToIndex(this.room!.messages!.length - 1);
-    setTimeout(() => {
-      const items = document.getElementsByClassName("message_container");
-      items[0].scrollIntoView();
-    }, 10);
+    console.log(this.messageList.nativeElement.scrollHeight)
+    this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight
   }
 }
 
