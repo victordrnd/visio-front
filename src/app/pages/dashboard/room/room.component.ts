@@ -27,7 +27,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private socketService: SocketService) { }
 
-
+  current_user : any;
   room_id: number = 0;
   room: RoomModel | undefined;
   current_message = "";
@@ -38,6 +38,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.fetchRoom();
     this.registerOnMessageSubscriber();
+    this.current_user = this.authService.current_user;
   }
 
   ngAfterViewInit(): void {
@@ -45,6 +46,7 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
   async fetchRoom() {
     this.room = await this.roomService.show(this.room_id).toPromise();
+    console.log(this.room);
     this.users_ids = this.room!.users!.map(user_room => user_room.user_id) as Array<any>;
     this.scrollDown();
   }
@@ -62,8 +64,16 @@ export class RoomComponent implements OnInit, AfterViewInit {
         type: 'text',
         message: this.current_message,
       }
-      await this.messageService.send(obj).toPromise().then(res => {
-        this.socketService.sendMessage({ message: this.current_message, type: 'text', users_ids: this.users_ids, room_id: this.room!.id });
+      await this.messageService.send(obj).toPromise().then((res: any) => {
+        console.log(res);
+        const obj = {
+          message: this.current_message,
+          type: 'text',
+          room_id: this.room!.id,
+          user_id: res.user_id
+        }
+        this.socketService.sendMessage(obj);
+        this.room?.messages?.unshift(obj);
       });
       this.current_message = "";
     }
@@ -71,20 +81,22 @@ export class RoomComponent implements OnInit, AfterViewInit {
 
 
   registerOnMessageSubscriber() {
-    this.socketService.onNewMessage().subscribe((message: any)=> {
-      console.log(message)
+    this.socketService.onNewMessage().subscribe(obj => {
+      this.room?.messages?.unshift(obj);
+      console.log("Liste messages", this.room?.messages)
+      console.log("Message received ", obj);
     })
   }
 
 
   private scrollDown() {
-  //console.log(this.messageList.elementRef.nativeElement)
-  this.messageList.scrollToIndex(this.room!.messages!.length - 1);
-  setTimeout(() => {
-    const items = document.getElementsByClassName("message_container");
-    items[0].scrollIntoView();
-  }, 10);
-}
+    //console.log(this.messageList.elementRef.nativeElement)
+    //this.messageList.scrollToIndex(this.room!.messages!.length - 1);
+    setTimeout(() => {
+      const items = document.getElementsByClassName("message_container");
+      items[0].scrollIntoView();
+    }, 10);
+  }
 }
 
 

@@ -52,6 +52,7 @@ export class AuthService {
     if(!this.current_user.rooms){
       this.current_user.rooms = await this.roomService.list().toPromise()
     }
+    this.socketService.init({user});
     this.currentUser.next(user);
     this.isAuthenticatedSubject.next(true);
   }

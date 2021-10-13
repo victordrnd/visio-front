@@ -5,11 +5,11 @@
 </nz-button-group>
 
 
-<cdk-virtual-scroll-viewport itemSize="20" class="scrollable" #messageList>
+<div itemSize="20" class="scrollable" #messageList>
   <!-- <div class="scrollable" #messageList> -->
   <div class="messages" *ngIf="room">
-    <div class="message_container not-reply " *cdkVirtualFor="let message of room!.messages">
-      <div class="avatar"
+    <div class="message_container" [class.reply]="message.user_id == current_user.id" [class.not-reply]="message.user_id != current_user.id" *ngFor="let message of room!.messages">
+      <div class="avatar" *ngIf="message.user_id != current_user.id"
         style="background-image: url('https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/robot-face.png');">
       </div>
       <div class="message">
@@ -27,13 +27,13 @@
     </div>
   </div>
   <!-- </div> -->
-</cdk-virtual-scroll-viewport>
+</div>
 
 <div class="footer">
   <i nz-icon nzType="file-add" class="mx-2 text-primary h6 mt-2 cursor-pointer " nzTheme="fill"></i>
   <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
     <!-- <input type="text" nz-input placeholder="input search text" /> -->
-    <textarea (keydown.enter)="$event.preventDefault(); sendMessage()" [(ngModel)]="current_message" nz-input
+    <textarea maxlength="250" (keydown.enter)="$event.preventDefault(); sendMessage()" [(ngModel)]="current_message" nz-input
       [nzAutosize]="{ minRows: 1, maxRows: 2 }" placeholder="" nzAutosize></textarea>
   </nz-input-group>
   <ng-template #suffixIconButton>

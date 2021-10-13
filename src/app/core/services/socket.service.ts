@@ -38,8 +38,8 @@ export class SocketService {
 
 
   //Messages
-  public sendMessage({message, users_ids, type } : any){
-    this.socketService.emit('message.new', message, users_ids, type);
+  public sendMessage(obj : any){
+    this.socketService.emit('message.new', obj);
   }
 
   public onNewMessage(): Observable<any>  {
