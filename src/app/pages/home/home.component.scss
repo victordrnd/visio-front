@@ -1,0 +1,42 @@
+html {
+ overflow: hidden !important;
+}
+
+.home-body{
+    .nav {
+        .logo {
+            width: 50px;
+            margin : 0px;
+        }
+        .buttons {
+            .btn-register {
+                background-color: #1e1e1e !important;
+            }
+        }
+    }
+    .header{
+        text-align: center;
+        h1 {
+            font-size: 64px;
+        }
+        h4 {
+            color:grey;
+        }
+    }
+    .body {
+        margin-top: 100px;
+        .description {
+            text-align: left;
+            max-width: 500px;
+            h3 {
+                color: #646afa;
+            }
+        }
+        .images {
+            img {      
+                width: 350px;
+                height: 350px;
+            }
+        }
+    }
+}
