@@ -62,7 +62,6 @@ export class AuthService {
       map((res: any) => {
         this.setAuth(res);
         this.socketService.init(res);
-        console.log("TESTTT", res);
         return res;
       }),
       catchError(this.formatErrors)

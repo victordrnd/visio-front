@@ -39,6 +39,7 @@ export class CallService {
     }
 
     this.socketService.fromEvent<any>('phone.negociating').subscribe((sessionDescription: RTCSessionDescription) => {
+      console.log("Phone.negociating",sessionDescription);
       this.sendAnswer({ video: true, session: sessionDescription })
     })
 
@@ -82,7 +83,7 @@ export class CallService {
     let sessionDescription: RTCSessionDescriptionInit = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(sessionDescription);
     console.log('Phone calling');
-    this.socketService.emit('phone.calling', { session: sessionDescription, video, users_ids })
+    this.socketService.emit('phone.calling', video, sessionDescription)
   }
 
 
