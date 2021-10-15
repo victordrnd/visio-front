@@ -71,8 +71,6 @@ export class RoomComponent implements OnInit, AfterViewInit {
           user_id: res.user_id
         }
         this.socketService.sendMessage(obj);
-        this.room?.messages?.unshift(obj);
-        this.scrollDown();
       });
       this.current_message = "";
     }

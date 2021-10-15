@@ -46,4 +46,15 @@ export class SocketService {
     return this.socketService.fromEvent<any>('message.send');
   }
 
+
+  //Room
+  createRoom(users_ids : Array<number>){
+    this.socketService.emit('room.create', users_ids);
+  }
+
+
+  onRoomCreated(){
+    return this.socketService.fromEvent('room.create');
+  }
+
 }

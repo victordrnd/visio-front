@@ -1,8 +1,10 @@
-<nz-button-group>
-  <button nz-button nzType="primary" (click)="startCall(true)"><i nz-icon nzType="video-camera"
-      nzTheme="fill"></i></button>
-  <button nz-button nzType="primary" (click)="startCall()"><i nz-icon nzType="phone" nzTheme="fill"></i></button>
-</nz-button-group>
+<div class="d-flex justify-content-between">
+  <nz-button-group>
+    <button nz-button nzType="primary" (click)="startCall(true)"><i nz-icon nzType="video-camera"
+        nzTheme="fill"></i></button>
+    <button nz-button nzType="primary" (click)="startCall()"><i nz-icon nzType="phone" nzTheme="fill"></i></button>
+  </nz-button-group>
+</div>
 
 
 <div itemSize="20" class="scrollable" #messageList>
@@ -13,7 +15,8 @@
       <!-- <div class="avatar" *ngIf="message.user_id != current_user.id"
         style="background-image: url('https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/robot-face.png');">
       </div> -->
-      <nz-avatar class="avatar" *ngIf="message.user_id != current_user.id" nzIcon="user" nzSize="large" style="vertical-align: middle;"></nz-avatar>
+      <nz-avatar class="avatar" *ngIf="message.user_id != current_user.id" nzIcon="user" nzSize="large"
+        style="vertical-align: middle;"></nz-avatar>
       <div class="message">
         <p class="text">{{message.message }}</p>
       </div>
