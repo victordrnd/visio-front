@@ -1,6 +1,9 @@
-<video autoplay playsinline #myVideo class="w-100" style="height:93vh"></video>
-<div class="call-controls">
-    <app-call-controls (onCameraToggled)="toggleCamera()"></app-call-controls>
+<div style="height:93vh">
+    <video autoplay playsinline #myVideo class="w-100 h-100" [class.d-none]="isAudio"></video>
+    <div class="cover" [class.d-none]="!isAudio">
+        <nz-avatar [nzSize]="150" nzText="VD" style="background-color:#5e53fc;"></nz-avatar>
+    </div>
 </div>
 
 <video autoplay playsinline #videoFallback [class.invisible]="hideVideo" class="video-fallback"></video>
+<app-call-controls (onCameraToggled)="toggleCamera()"></app-call-controls>

@@ -14,6 +14,7 @@ export class VideoCallComponent implements OnInit {
   @ViewChild('videoFallback') videoFallback!: ElementRef;
   peerConnection!: RTCPeerConnection;
   hideVideo = false;
+  isAudio : boolean = true;
   constructor(private socketService: Socket,
     private callService : CallService,
     private route : ActivatedRoute) { }
@@ -23,6 +24,7 @@ export class VideoCallComponent implements OnInit {
 
     
     this.peerConnection.ontrack = (ev: any) => {
+      this.isAudio = ev.track.kind =="audio";
       this.video.nativeElement.srcObject = ev.streams[0];
     };
    
