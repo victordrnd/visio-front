@@ -25,6 +25,7 @@ export class SidebarComponent implements OnInit {
   searchTerm: string | null = null;
   filteredRooms: Array<RoomModel> = [];
   ngOnInit(): void {
+    console.log('init sidebar')
     this.fetchRooms();
 
     this.socketService.onRoomCreated().subscribe(() => {

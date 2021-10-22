@@ -1,5 +1,5 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Socket } from 'ngx-socket-io';
@@ -17,43 +17,43 @@ import { SocketService } from 'src/app/core/services/socket.service';
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.scss']
 })
-export class RoomComponent implements OnInit, AfterViewInit {
+export class RoomComponent implements OnInit, OnDestroy {
   @ViewChild('messageList') messageList!: ElementRef;
-  constructor(private router: Router,
-    private callService: CallService,
+  constructor(
     private activatedRoute: ActivatedRoute,
     private roomService: RoomsService,
     private messageService: MessageService,
     private authService: AuthService,
     private socketService: SocketService) { }
 
-  current_user : any;
+  current_user: any;
   room_id: number = 0;
   room: RoomModel | undefined;
   current_message = "";
   users_ids = [] as any;
   subscriptions: Array<Subscription> = [];
   ngOnInit(): void {
-    this.room_id = this.activatedRoute.snapshot.params.id;
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.fetchRoom();
-    this.registerOnMessageSubscriber();
+    const sb = this.activatedRoute.params.subscribe(params => {
+      this.room_id = params.id;
+      this.fetchRoom();
+      this.registerOnMessageSubscriber();
+    })
     this.current_user = this.authService.current_user;
+    this.subscriptions.push(sb);
   }
 
-  ngAfterViewInit(): void {
+  ngOnDestroy(): void {
+    this.subscriptions.map(sb => sb.unsubscribe());
   }
 
   async fetchRoom() {
     this.room = await this.roomService.show(this.room_id).toPromise();
+    this.roomService.currentRoom.next(this.room);
     this.users_ids = this.room!.users!.map(user_room => user_room.user_id) as Array<any>;
     this.scrollDown();
   }
 
-  async startCall(video = false) {
-    await this.callService.startCall(video, this.users_ids);
-    this.router.navigate(['/dashboard/video-call'], { state: { video: video } })
-  }
+  
 
   async sendMessage() {
     if (this.current_message.length) {
@@ -89,7 +89,8 @@ export class RoomComponent implements OnInit, AfterViewInit {
     this.messageList.nativeElement.scrollTop = this.messageList.nativeElement.scrollHeight
     setTimeout(() => {
       const items = document.getElementsByClassName("message_container");
-      items[0].scrollIntoView();
+      if (items.length)
+        items[0].scrollIntoView();
     }, 10);
   }
 }

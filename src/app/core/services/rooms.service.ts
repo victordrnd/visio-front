@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { RoomModel } from '../models/room.model';
@@ -9,9 +9,9 @@ import { RoomModel } from '../models/room.model';
   providedIn: 'root'
 })
 export class RoomsService {
+  currentRoom : Subject<RoomModel> = new Subject<RoomModel>();
 
   constructor(private http: HttpClient) { }
-
 
   public list(): Observable<Array<RoomModel>> {
     return this.http.get<Array<RoomModel>>(environment.apiUrl + "/my/rooms");

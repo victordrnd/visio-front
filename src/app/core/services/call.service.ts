@@ -72,7 +72,6 @@ export class CallService {
   }
 
   async startCall(video = false, users_ids: Array<any> = []) {
-    console.log(users_ids);
     this.peerConnection.onicecandidate = (ev: RTCPeerConnectionIceEvent) => {
       if (ev.candidate) {
         this.socketService.emit('phone.new-ice-candidate', ev.candidate)

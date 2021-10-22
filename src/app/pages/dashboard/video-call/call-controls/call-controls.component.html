@@ -6,7 +6,7 @@
         <i nz-icon [nzType]="isMuted ? 'audio-muted' : 'audio'" (click)="callService.toggleMicrophone();isMuted=!isMuted" [nzTheme]="isMuted ? 'outline' : 'fill'" [class.text-primary]="!isMuted"></i>
     </ng-template>
     <ng-template #actionCamera>
-        <i nz-icon nzType="video-camera" (click)="callService.toggleCamera()" nzTheme="fill"></i>
+        <i nz-icon nzType="video-camera" (click)="callService.toggleCamera();onCameraToggled.emit()" nzTheme="fill"></i>
     </ng-template>
     <ng-template #actionChat>
         <i nz-icon nzType="message" nzTheme="fill"></i>

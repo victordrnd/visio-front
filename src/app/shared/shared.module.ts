@@ -18,11 +18,13 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateRoomModalComponent } from './components/create-room-modal/create-room-modal.component'
+import { RoomTitlePipe } from '../core/pipes/room-title.pipe';
 @NgModule({
   declarations: [
     SidebarComponent,
     HeaderComponent,
-    CreateRoomModalComponent
+    CreateRoomModalComponent,
+    RoomTitlePipe
   ],
   imports: [
     CommonModule,
@@ -41,7 +43,7 @@ import { CreateRoomModalComponent } from './components/create-room-modal/create-
     NzAutocompleteModule,
     ScrollingModule,
   ],
-  exports : [SidebarComponent,HeaderComponent, NzIconModule],
+  exports : [SidebarComponent,HeaderComponent, NzIconModule, RoomTitlePipe],
   entryComponents : [CreateRoomModalComponent]
 })
 export class SharedModule { }

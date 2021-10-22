@@ -20,12 +20,14 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+
 @NgModule({
   declarations: [
     DashboardComponent,
     RoomComponent,
     VideoCallComponent,
-    CallControlsComponent
+    CallControlsComponent,
   ],
   imports: [
     CommonModule,
@@ -42,7 +44,8 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
     NzEmptyModule,
     NzDropDownModule,
     ScrollingModule,
-    NzAvatarModule
+    NzAvatarModule,
+    NzDividerModule
   ],
   bootstrap : [DashboardComponent]
 })

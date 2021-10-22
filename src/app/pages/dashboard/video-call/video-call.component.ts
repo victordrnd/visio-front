@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Socket } from 'ngx-socket-io';
@@ -9,15 +9,17 @@ import { CallService } from 'src/app/core/services/call.service';
   templateUrl: './video-call.component.html',
   styleUrls: ['./video-call.component.scss']
 })
-export class VideoCallComponent implements OnInit {
+export class VideoCallComponent implements OnInit, OnDestroy {
   @ViewChild('myVideo') video!: ElementRef;
   @ViewChild('videoFallback') videoFallback!: ElementRef;
   peerConnection!: RTCPeerConnection;
   hideVideo = false;
   isAudio : boolean = true;
+  stream : MediaStream | undefined;
   constructor(private socketService: Socket,
     private callService : CallService,
     private route : ActivatedRoute) { }
+
 
   async ngOnInit(): Promise<any> {
     this.peerConnection = this.callService.peerConnection;
@@ -28,11 +30,19 @@ export class VideoCallComponent implements OnInit {
       this.video.nativeElement.srcObject = ev.streams[0];
     };
    
-    // const stream = await this.callService.getMediaStream(true);
-    // this.videoFallback.nativeElement.srcObject = stream;
+    this.stream = await this.callService.getMediaStream(true);
+    this.videoFallback.nativeElement.srcObject = this.stream;
+    this.videoFallback.nativeElement.muted = true
   }
 
   toggleCamera(){
     this.hideVideo = !this.hideVideo;
+  }
+
+  ngOnDestroy(): void {
+    this.stream?.getTracks().forEach((track : MediaStreamTrack) => {
+        track.stop();
+    });
+    this.callService.hangUp();
   }
 }

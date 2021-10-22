@@ -4,5 +4,6 @@ export interface RoomModel{
     picture : string,
     messages? : Array<any>;
     users? : Array<any>;
-    rooms? : Array<any>
+    rooms? : Array<any>;
+    last_message? : any;
 }

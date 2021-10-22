@@ -6,7 +6,7 @@
             <nz-autocomplete #auto>
                 <nz-auto-option *ngFor="let room of filteredRooms" [routerLink]="'/dashboard/room/' + room.id"
                     [nzValue]="room.id" [nzLabel]="room.label">
-                    {{ room.label }}
+                    {{ room | roomTitle }}
                 </nz-auto-option>
             </nz-autocomplete>
         </nz-input-group>
@@ -15,21 +15,18 @@
         </ng-template>
 
     </li>
-    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
 
-        <li nz-menu-item *cdkVirtualFor="let room of rooms" class="pl-1 py-4"
-            [routerLink]="'/dashboard/room/' + room.id">
+    <li nz-menu-item *ngFor="let room of rooms" class="pl-1 py-4" [routerLink]="'/dashboard/room/' + room.id">
+        <!-- <nz-avatar nzIcon="user" nzSrc="//zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar> -->
 
-            <!-- <nz-avatar nzIcon="user" nzSrc="//zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar> -->
-
-            <nz-comment nzAuthor="{{room.label | titlecase}}">
-                <nz-avatar nz-comment-avatar [nzSize]="45" style="background-color: #1890ff" nzText="NG"></nz-avatar>
-                <nz-comment-content>
-                    <p class="text-muted message_preview">{{room.last_message?.message}}  · {{room.last_message?.created_at | date: 'H:mm'}}</p>
-                </nz-comment-content>
-            </nz-comment>
-        </li>
-    </cdk-virtual-scroll-viewport>
+        <nz-comment nzAuthor="{{room | roomTitle | titlecase}}">
+            <nz-avatar nz-comment-avatar [nzSize]="45" style="background-color: #1890ff" nzText="NG"></nz-avatar>
+            <nz-comment-content>
+                <p class="text-muted message_preview">{{room.last_message?.message}} · {{room.last_message?.created_at |
+                    date: 'H:mm'}}</p>
+            </nz-comment-content>
+        </nz-comment>
+    </li>
 
 
     <nz-empty *ngIf="rooms.length == 0"></nz-empty>
