@@ -1,23 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { distinctUntilChanged, map, catchError } from "rxjs/operators";
+import { SocketService } from "../../../app/core/services/socket.service"
+import { Router } from '@angular/router';
+import { UserModel } from '../models/user.model';
+import { UserService } from './user.service';
+import { RoomsService } from './rooms.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  private currentUserSubject = new BehaviorSubject<any>({});
-  public currentUser = this.currentUserSubject
-    .asObservable()
-    .pipe(distinctUntilChanged());
+  current_user: any;
+  public currentUser = new Subject;
 
   private isAuthenticatedSubject = new BehaviorSubject<any>(false);
   public isAuthenticated = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    private router : Router,
+    private socketService: SocketService,
+    private roomService : RoomsService) {}
 
   async populate() {
     if (this.getToken()) {
@@ -25,7 +30,7 @@ export class AuthService {
         const res: any = await this.http
           .get(`${environment.apiUrl}/auth/current`)
           .toPromise();
-        this.setAuth(res);
+        this.setAuth({user : res});
         this.isAuthenticatedSubject.next(true);
         return true;
       } catch (error) {
@@ -43,7 +48,12 @@ export class AuthService {
     if (token) {
       this.saveToken(token);
     }
-    this.currentUserSubject.next(user);
+    this.current_user = user;
+    if(!this.current_user.rooms){
+      this.current_user.rooms = await this.roomService.list().toPromise();
+    }
+    this.socketService.init({user});
+    this.currentUser.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 
@@ -51,6 +61,7 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/auth/login`, credentials).pipe(
       map((res: any) => {
         this.setAuth(res);
+        this.socketService.init(res);
         return res;
       }),
       catchError(this.formatErrors)
@@ -63,8 +74,9 @@ export class AuthService {
 
   purgeAuth() {
     this.destroyToken();
-    this.currentUserSubject.next({});
+    this.currentUser.next(null);
     this.isAuthenticatedSubject.next(false);
+    this.router.navigate(['/auth/login'])
   }
 
   private formatErrors(error: any) {

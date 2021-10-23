@@ -1,10 +1,15 @@
+@import '~locomotive-scroll/dist/locomotive-scroll.css';
 /* You can add global styles to this file, and also import other style files */
-body{
+body {
     background-color: #1e1e1e;
 }
 
-:host::ng-deep{
-    .ant-layout-content{
+:host::ng-deep {
+    .ant-layout-content {
         background-color: #1e1e1e;
     }
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }

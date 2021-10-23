@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Socket } from 'ngx-socket-io';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PhoneCallAnswer } from '../models/phone-call-answer';
 import { Location } from '@angular/common';
 @Injectable({
@@ -33,14 +33,13 @@ export class CallService {
         this.socketService.emit('phone.new-ice-candidate', ev.candidate)
     }
     this.peerConnection.onnegotiationneeded = (ev) => {
-      console.log("negotiation", ev);
       this.peerConnection.createOffer().then(d => this.peerConnection.setLocalDescription(d))
         .then(() => this.socketService.emit('phone.negociating', this.peerConnection.localDescription))
         .catch(e => console.log(e));
-      console.log("Negociation completed")
     }
 
     this.socketService.fromEvent<any>('phone.negociating').subscribe((sessionDescription: RTCSessionDescription) => {
+      console.log("Phone.negociating",sessionDescription);
       this.sendAnswer({ video: true, session: sessionDescription })
     })
 
@@ -72,7 +71,7 @@ export class CallService {
     })
   }
 
-  async startCall(video = false) {
+  async startCall(video = false, users_ids: Array<any> = []) {
     this.peerConnection.onicecandidate = (ev: RTCPeerConnectionIceEvent) => {
       if (ev.candidate) {
         this.socketService.emit('phone.new-ice-candidate', ev.candidate)
@@ -82,14 +81,15 @@ export class CallService {
     this.addTracksToPeerConnection(this.myStream);
     let sessionDescription: RTCSessionDescriptionInit = await this.peerConnection.createOffer();
     this.peerConnection.setLocalDescription(sessionDescription);
-    this.socketService.emit('phone.calling', { session: sessionDescription, video })
+    console.log('Phone calling');
+    this.socketService.emit('phone.calling', video, sessionDescription)
   }
 
 
   async sendAnswer(phoneCallAnswer: PhoneCallAnswer) {
     await this.peerConnection.setRemoteDescription(new RTCSessionDescription(phoneCallAnswer.session))
     const answer = await this.peerConnection.createAnswer();
-    if(!this.myStream){
+    if (!this.myStream) {
       this.myStream = await this.getMediaStream(phoneCallAnswer.video);
       this.addTracksToPeerConnection(this.myStream);
     }
@@ -103,9 +103,9 @@ export class CallService {
     const screenTrack = stream.getVideoTracks()[0];
     if (this.videoTrack) {
       this.videoTrack.replaceTrack(screenTrack);
-      try{
+      try {
         this.videoTrack = this.peerConnection.addTrack(screenTrack, this.myStream)
-      }catch(e){
+      } catch (e) {
         this.myStream.getVideoTracks().forEach(track => track.enabled = true);
       }
     } else {
@@ -115,12 +115,10 @@ export class CallService {
   }
 
   async stopScreenShare() {
-    if (this.myStream){
-      // this.peerConnection.removeTrack(this.videoTrack);
+    if (this.myStream) {
       this.myStream.getVideoTracks().forEach(track => {
         track.enabled = false;
       });
-      console.log("All streams shutdown");
     }
   }
 
@@ -140,11 +138,11 @@ export class CallService {
         audio: true, video: video ? {
           width: { ideal: 4096 },
           height: { ideal: 2160 },
-          facingMode: "environment"
+          //facingMode: "user",
         } : false
       });
     } catch (e) {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
     }
     return stream;
   }
@@ -156,7 +154,7 @@ export class CallService {
 
   addTracksToPeerConnection(stream: MediaStream): void {
     stream.getTracks().forEach((track: MediaStreamTrack) => {
-        this.videoTrack = this.peerConnection.addTrack(track, stream);
+      this.videoTrack = this.peerConnection.addTrack(track, stream);
     });
   }
 
@@ -172,13 +170,18 @@ export class CallService {
   }
 
   public registerEvents(): void {
-   
+
   }
 
   private openRTCConnection(): RTCPeerConnection {
     return new RTCPeerConnection({
       iceServers: [
-        { urls: "stun:stun.l.google.com:19302" }
+        { urls: "stun:stun.l.google.com:19302" },
+        // {
+        //   urls: "turn:srv1.victordurand.fr",
+        //   username: "visio",
+        //   credential: "123+aze"
+        // }
       ]
     });
   }

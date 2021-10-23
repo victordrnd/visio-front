@@ -16,12 +16,18 @@ import { VideoCallComponent } from './video-call/video-call.component';
 import { CallControlsComponent } from './video-call/call-controls/call-controls.component';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+
 @NgModule({
   declarations: [
     DashboardComponent,
     RoomComponent,
     VideoCallComponent,
-    CallControlsComponent
+    CallControlsComponent,
   ],
   imports: [
     CommonModule,
@@ -34,7 +40,12 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     NzSliderModule,
     SocketIoModule,
     NzCardModule,
-    NzDropDownModule
+    NzInputModule,
+    NzEmptyModule,
+    NzDropDownModule,
+    ScrollingModule,
+    NzAvatarModule,
+    NzDividerModule
   ],
   bootstrap : [DashboardComponent]
 })
