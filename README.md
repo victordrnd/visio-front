@@ -1,27 +1,38 @@
-# Visio
+![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)
+![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.1.
 
-## Development server
+# Visio - Vidéo conférence & messagerie
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+L'objectif de ce projet est de réaliser un site internet communiquant avec un backend développé sans framework.
+Visio permet d'envoyer des messages texte, ainsi que de lancer des appels vidéo et audio. La fonction partage d'écran permet de faire visualiser à son correspondant l'écran souhaité. 
 
-## Code scaffolding
+**Démo :** [**https://visio.victordurand.fr**](https://visio.victordurand.fr)  
+## Développement
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Ce projet est dépendant d' [**Angular**](https://angular.io/)
 
-## Build
+```bash
+# Clonez le dépot Github 
+$ git clone https://github.com/victordrnd/visio-front.git
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+# Aller vers le répertoire
+$ cd visio-front
 
-## Running unit tests
+# Installer les dépendances
+$ npm i
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# Démarrer le serveur (nécessite @angular/cli)
+$ ng serve
+```
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Déploiement
 
-## Further help
+```bash
+# Transpiler le code javascript
+$ ng build --prod
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+# Déployer le projet sur Github Pages
+$ npm run deploy
+```
